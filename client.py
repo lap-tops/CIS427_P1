@@ -13,17 +13,18 @@ sock.connect(server_address)
 
 try:
 
-    message = input(" -> ")  # take input
-
+    message = ""
     while message.lower().strip() != 'quit':
+        message = input(" -> ")  # take input
         sock.send(message.encode())  # send message
         data = sock.recv(1024).decode()  # receive response
 
-        print('Received from server: ' + data)  # show in terminal
-        message = input(" -> ")  # again take input
+        if not data:
+            # if data is not received break
+            break
+
+        print(data)  # show in terminal
 
 
 finally:
-    # print('closing socket')
-    # client.close()
     print('closing socket')

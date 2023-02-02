@@ -18,21 +18,45 @@ sock.bind(server_address)
 # Listen for incoming connections
 sock.listen(1)
 
-database.buy_stock("AAPL", 50, 1, 1)
-
-print("First List", database.list_stocks(1))
-
-print("Get Balance", database.get_balance(1))
-
-print("Sell stock", database.sell_stock("AAPL", 50, 1, 1))
-
-print("List stock", database.list_stocks(1))
-
-print("New balance", database.get_balance(1))
-
 
 connection, address = sock.accept()  # accept new connection
 print("Connection from: " + str(address))
+
+
+def process_data(data, connection: socket.socket):
+    print("Received: " + data)
+    data = data.lower().strip().split(" ")
+    if data[0] == "buy":
+        # Check command
+        if (len(data) != 4):
+            return "400 Invalid command format"
+
+        return database.buy_stock(data[1].upper(), float(data[2]), float(data[3]), 1)
+    elif data[0] == "sell":
+        # Check command
+        if (len(data) != 4):
+            return "400 Invalid command format"
+
+        return database.sell_stock(data[1].upper(), float(data[2]), float(data[3]), 1)
+    elif data[0] == "list":
+        return database.list_stocks(1)
+    elif data[0] == "balance":
+        return database.get_balance(1)
+    elif data[0] == "quit":
+        connection.send("200 OK".encode())
+        connection.close()
+        database.close()
+        return None
+    elif data[0] == "shutdown":
+        connection.send("200 OK".encode())
+        connection.close()
+        sock.close()
+        database.close()
+        exit()
+    else:
+        return "400 Invalid command"
+
+
 while True:
 
     # receive data stream. it won't accept data packet greater than 1024 bytes
@@ -40,9 +64,14 @@ while True:
     if not data:
         # if data is not received break
         break
-    print("from connected user: " + str(data))
+
+    message = process_data(data, connection)
+
+    if (message is None):
+        connection, address = sock.accept()  # accept new connection
+        continue
 
     # send data to the client
-    connection.send(str("Received: " + str(data)).encode())
+    connection.send(str(message).encode())
 
 connection.close()
