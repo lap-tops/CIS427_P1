@@ -15,12 +15,11 @@ try:
 
     message = input(" -> ")  # take input
 
-    while message.lower().strip() != 'bye':
+    while message.lower().strip() != 'quit':
         sock.send(message.encode())  # send message
         data = sock.recv(1024).decode()  # receive response
 
         print('Received from server: ' + data)  # show in terminal
-
         message = input(" -> ")  # again take input
 
 
