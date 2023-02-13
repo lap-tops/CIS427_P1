@@ -37,12 +37,16 @@ def close():
 
 
 def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
+    #application allows 1 client currently
+    #checks to make sure passed id=1
+    if(user_id!=1):
+        return "User"+str(user_id)+" doesn't exist"
     # Check if user has enough money
     user = conn.execute('''SELECT * FROM Users
     WHERE ID = ?;
     ''', (user_id,)).fetchone()
-
-    if (user is None or user[5] < stock_balance * stock_price):
+    
+    if (user[5] < stock_balance * stock_price):
         return "400 Not enough money"
 
     # Check if user already has stock
@@ -80,6 +84,11 @@ def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
 
 
 def sell_stock(stock_symbol, stock_balance, stock_price, user_id):
+    #application allows 1 client currently
+    #checks to make sure passed id=1
+    if(user_id!=1):
+        return "User"+str(user_id)+" doesn't exist"
+
 
     # Check if user has enough stock
     stock = conn.execute('''SELECT * FROM Stocks
