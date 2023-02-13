@@ -28,16 +28,16 @@ def process_data(data, connection: socket.socket):
     data = data.lower().strip().split(" ")
     if data[0] == "buy":
         # Check command
-        if (len(data) != 4):
+        if (len(data) != 5):
             return "400 Invalid command format"
 
-        return database.buy_stock(data[1].upper(), float(data[2]), float(data[3]), 1)
+        return database.buy_stock(data[1].upper(), float(data[2]), float(data[3]), int(data[4]))
     elif data[0] == "sell":
         # Check command
-        if (len(data) != 4):
+        if (len(data) != 5):
             return "400 Invalid command format"
 
-        return database.sell_stock(data[1].upper(), float(data[2]), float(data[3]), 1)
+        return database.sell_stock(data[1].upper(), float(data[2]), float(data[3]), int(data[4]))
     elif data[0] == "list":
         return database.list_stocks(1)
     elif data[0] == "balance":
