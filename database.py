@@ -35,11 +35,19 @@ def init():
 def close():
     conn.close()
 
+def getUser(user_id):
+    cursor = conn.execute('''SELECT * FROM Users WHERE ID = ?''', (user_id,))
+    row = cursor.fetchone()
+    if row is None:
+        return None
+    else:
+        return row
+
 
 def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
     #application allows 1 client currently
     #checks to make sure passed id=1
-    if(user_id!=1):
+    if(getUser(user_id)==None):
         return "User"+str(user_id)+" doesn't exist"
     # Check if user has enough money
     user = conn.execute('''SELECT * FROM Users
@@ -86,7 +94,7 @@ def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
 def sell_stock(stock_symbol, stock_balance, stock_price, user_id):
     #application allows 1 client currently
     #checks to make sure passed id=1
-    if(user_id!=1):
+    if(getUser(user_id)==None):
         return "User"+str(user_id)+" doesn't exist"
 
 
@@ -136,9 +144,9 @@ def list_stocks(user_id):
     ''', (user_id,)).fetchall()
 
     if (rows is None or len(rows) == 0):
-        return "200 ok \nNo stocks"
+        return "200 ok \n No stocks"
 
-    stocks = ""A
+    stocks = ""
     for row in rows:
         stocks += row[1] + " " + str(row[2]) + " " + str(row[3]) + "\n"
 
