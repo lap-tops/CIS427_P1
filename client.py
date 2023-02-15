@@ -1,13 +1,18 @@
 # Create a client that can send messages to the server and receive replies running on port 8000 from the server in server.py
 
 import socket
-
+import sys
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
+# Get the IP address from command line arguments
+if len(sys.argv) != 2:
+    print("Usage: python client.py <IP address>")
+    sys.exit(1)
+
 # Connect the socket to the port where the server is listening
-IP_ADDRESS=input("What IP address would you like to conenct to: ")
+IP_ADDRESS = sys.argv[1]
 server_address = (IP_ADDRESS, 8000)
 
 
