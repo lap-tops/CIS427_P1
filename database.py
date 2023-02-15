@@ -37,12 +37,16 @@ def close():
 
 
 def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
+    #application allows 1 client currently
+    #checks to make sure passed id=1
+    if(user_id!=1):
+        return "User"+str(user_id)+" doesn't exist"
     # Check if user has enough money
     user = conn.execute('''SELECT * FROM Users
     WHERE ID = ?;
     ''', (user_id,)).fetchone()
-
-    if (user is None or user[5] < stock_balance * stock_price):
+    
+    if (user[5] < stock_balance * stock_price):
         return "400 Not enough money"
 
     # Check if user already has stock
@@ -76,10 +80,15 @@ def buy_stock(stock_symbol, stock_balance, stock_price, user_id):
     WHERE stock_symbol = ? AND user_id = ?;
     ''', (stock_symbol, user_id)).fetchone()
 
-    return "BOUGHT: New balance: " + str(stock[2]) + " " + stock[1].upper() + " USD balance: " + str(user[5])
+    return "200 ok \nBOUGHT: New balance: " + str(stock[2]) + " " + stock[1].upper() + " USD balance: " + str(user[5])
 
 
 def sell_stock(stock_symbol, stock_balance, stock_price, user_id):
+    #application allows 1 client currently
+    #checks to make sure passed id=1
+    if(user_id!=1):
+        return "User"+str(user_id)+" doesn't exist"
+
 
     # Check if user has enough stock
     stock = conn.execute('''SELECT * FROM Stocks
@@ -118,7 +127,7 @@ def sell_stock(stock_symbol, stock_balance, stock_price, user_id):
 
     stockBalance = stock[2] if stock is not None else 0
 
-    return "SOLD: New balance: " + str(stockBalance) + " " + stock_symbol.upper() + " USD balance: " + str(user[5])
+    return "200 ok \nSOLD: New balance: " + str(stockBalance) + " " + stock_symbol.upper() + " USD balance: " + str(user[5])
 
 
 def list_stocks(user_id):
@@ -127,17 +136,17 @@ def list_stocks(user_id):
     ''', (user_id,)).fetchall()
 
     if (rows is None or len(rows) == 0):
-        return "No stocks"
+        return "200 ok \nNo stocks"
 
-    stocks = ""
+    stocks = ""A
     for row in rows:
         stocks += row[1] + " " + str(row[2]) + " " + str(row[3]) + "\n"
 
-    return stocks.strip()
+    return "200 ok \n"+ stocks.strip()
 
 
 def get_balance(user_id):
     user = conn.execute('''SELECT usd_balance, first_name, last_name FROM Users
     WHERE ID = ?;
     ''', (user_id,)).fetchone()
-    return "Balance for user " + user[1] + " " + user[2] + ": $" + str(user[0])
+    return "200 ok \nBalance for user " + user[1] + " " + user[2] + ": $" + str(user[0])
