@@ -7,8 +7,11 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 # Connect the socket to the port where the server is listening
-server_address = ("127.0.0.1", 8000)
-print('connecting to %s port %s' % server_address)
+IP_ADDRESS=input("What IP address would you like to conenct to: ")
+server_address = (IP_ADDRESS, 8000)
+
+
+print('connecting to %s' % server_address[0])
 sock.connect(server_address)
 
 try:
